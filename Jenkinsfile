@@ -18,7 +18,7 @@ node {
     }
 
     stage('Push') {
-       docker.withRegistry('https://registry.ludovic.io/' , 'harbor_id') {
+       docker.withRegistry('https://registry.ludovic.io/' , 'd8c4ec2a-b4cb-41bb-885e-e6e8b8d6f3c9') {
               img.push 'latest'
               img.push()
           }
