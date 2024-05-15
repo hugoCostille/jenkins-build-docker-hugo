@@ -1,23 +1,30 @@
-
 node {
 
-  
-   def IMAGE="srv-web-ludo"
-   def container_name="srv-web"
-	
+   def registryProjet='buildhugo/'
+   def IMAGE="${registryProjet}app:${version}"
+
     stage('Clone') {
           checkout scm
     }
 
-    stage('Build') {
+    def img = stage('Build') {
           docker.build("$IMAGE",  '.')
+          }
+
+    stage('Run') {
+          img.withRun("--name run-$BUILD_ID") { c ->
+       
+          }
     }
 
-    stage('Run image') {
-        docker.image('srv-web-ludo').withRun('--name srv-web' ) { c ->
-
-        sh 'docker ps | grep srv-web'
-	}
-
+    stage('Push') {
+       docker.withRegistry('https://registry.ludovic.io/' , 'harbor_id') {
+              img.push 'latest'
+              img.push()
+          }
     }
+   stage('compuse_up') {
+       sh 'docker compose up --detach'   
+    }
+
 }
